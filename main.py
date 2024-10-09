@@ -33,6 +33,11 @@ def create_conversation():
     conversation_id = 0
     conversation_id = data.get('data', {}).get('conversation_id', None)
     question = data.get('data', {}).get('question', None)
+    engine = data.get('data', {}).get('engine', None)
+
+    # error
+    if (engine is None):
+        return jsonify({"error": "Engine is not specified"}), 404
 
     # 기존 대화가 없으면 새로 생성
     if conversation_id is None:
@@ -42,16 +47,21 @@ def create_conversation():
         conversation_id_list.append(conversation_id)
         conversations[conversation_id] = {
             "title": '${conversation_id}', # 일단 대화 id로 지정
-            "engine": "Gemini",
+            "engine": engine,
             "create_time": datetime.now(),
             "update_time": datetime.now(),
             "pairing": []
         }
+    elif conversation_id not in conversations:
+        return jsonify({"error": "Conversation not found"}), 404
 
     # 답변 생성 및 저장
+    answer = "세종대왕은 한글을 창제하셨습니다."  # 여기를 우리가 만든 모델에서 받아오게 추후 수정
     response_data = {
         'data': {
-            'answer': "세종대왕은 한글을 창제하셨습니다."
+            'conversation_id': conversation_id,
+            'title': conversations[conversation_id]['title'],
+            'answer': answer
         }
     }
 
@@ -59,7 +69,7 @@ def create_conversation():
     conversation_data = {
         "id": len(conversations[conversation_id]['pairing']),
         "request_message": question,
-        "response_message": response_data,  # 아직 응답은 없으므로 빈 문자열
+        "response_message": answer,
         "create_time": datetime.now()
     }
     conversations[conversation_id]['pairing'].append(conversation_data)
