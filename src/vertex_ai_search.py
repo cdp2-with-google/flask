@@ -9,7 +9,17 @@ import os
 from langchain_google_vertexai.llms import VertexAI
 from langchain.prompts import PromptTemplate
 from langchain.chains import LLMChain
-from . import config 
+#from .config import PROJECT_ID, REGION, MODEL, SEARCH_URL
+PROJECT_ID = ""
+REGION="asia-northeast3"
+MODEL = "gemini-1.5-pro-001"
+SEARCH_URL = ""
+import google.auth.transport.requests
+import google.oauth2.id_token
+auth_req = google.auth.transport.requests.Request()
+audience = ""
+id_token = google.oauth2.id_token.fetch_id_token(auth_req, audience)
+
 
 def retrieve_vertex_ai_search(question:str, search_url:str, page_size:int) -> str:
     stream = os.popen('gcloud auth print-access-token')
@@ -19,7 +29,7 @@ def retrieve_vertex_ai_search(question:str, search_url:str, page_size:int) -> st
 
     # Create a credentials token to call a REST API
     headers = {
-        "Authorization": "Bearer "+ credential_token,
+        "Authorization": "Bearer "+ id_token,
         "Content-Type": "application/json"
     }
 
@@ -102,10 +112,10 @@ def parse_discovery_results(response_text: str) -> dict:
 
     return searched_ctx_dic
 
-def search_pdf(question:str, SEARCH_URL:str) -> str:
-    gemini_pro = VertexAI( model_name = config.MODEL,
-                  project=config.PROJECT_ID,
-                  location=config.REGION,
+def search_pdf(question:str, SEARCH_URL:str = SEARCH_URL) -> str:
+    gemini_pro = VertexAI( model_name = MODEL,
+                  project=PROJECT_ID,
+                  location=REGION,
                   verbose=True,
                   streaming=False,
                   temperature = 0.2,
