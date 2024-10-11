@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify, Response
 import time
 import json
 from datetime import datetime
+from src.rag import send_chat_message
 
 app = Flask(__name__)
 
@@ -61,6 +62,35 @@ def create_conversation():
         'data': {
             'conversation_id': conversation_id,
             'title': conversations[conversation_id]['title'],
+            'answer': answer
+        }
+    }
+
+    # 요청 메시지와 응답 메시지 저장
+    conversation_data = {
+        "id": len(conversations[conversation_id]['pairing']),
+        "request_message": question,
+        "response_message": answer,
+        "create_time": datetime.now()
+    }
+    conversations[conversation_id]['pairing'].append(conversation_data)
+
+    return jsonify(response_data)
+
+@app.route('/mvp/conversations', methods=['POST'])
+def create_conversation():
+    data = request.get_json()
+
+    # 요청으로부터 필요 데이터 추출
+    conversation_id = data.get('data', {}).get('conversation_id', 0)
+    question = data.get('data', {}).get('question', None)
+
+    # 답변 생성 및 저장
+    answer = send_chat_message(question)  # 여기를 우리가 만든 모델에서 받아오게 추후 수정
+    response_data = {
+        'data': {
+            'conversation_id': conversation_id,
+            'title': "",
             'answer': answer
         }
     }

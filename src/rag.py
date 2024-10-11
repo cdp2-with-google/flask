@@ -1,55 +1,55 @@
 import requests
-from vertexai.generative_models import (
-    FunctionDeclaration,
-    GenerationConfig,
-    GenerativeModel,
-    Part,
-    Tool,
-)
+# from vertexai.generative_models import (
+#     FunctionDeclaration,
+#     GenerationConfig,
+#     GenerativeModel,
+#     Part,
+#     Tool,
+# )
 import vertex_ai_search
 
-def tool_declarate() -> Tool:
-    # 항공 운임표 정보를 조회하는 기능
-    get_flight_fare_info = FunctionDeclaration(
-        name="get_flight_fare_info",
-        description="Retrieve flight fare information from a PDF based on departure and destination",
-        parameters={
-            "type": "object",
-            "properties": {
-                "departure": {"type": "string", "description": "Departure city"},
-                "destination": {"type": "string", "description": "Destination city"},
-            },
-            "required": ["departure", "destination"]
-        },
-    )
+# def tool_declarate() -> Tool:
+#     # 항공 운임표 정보를 조회하는 기능
+#     get_flight_fare_info = FunctionDeclaration(
+#         name="get_flight_fare_info",
+#         description="Retrieve flight fare information from a PDF based on departure and destination",
+#         parameters={
+#             "type": "object",
+#             "properties": {
+#                 "departure": {"type": "string", "description": "Departure city"},
+#                 "destination": {"type": "string", "description": "Destination city"},
+#             },
+#             "required": ["departure", "destination"]
+#         },
+#     )
 
 
-    # 여객 운송 약관(탑승 수속, 수하물 규정 등)을 조회하는 기능
-    get_transport_policy_info = FunctionDeclaration(
-        name="get_transport_policy_info",
-        description="Retrieve transportation policy information such as check-in and baggage rules from a PDF",
-        parameters={
-            "type": "object",
-            "properties": {
-                "policy_type": {"type": "string", "description": "Type of policy, e.g., check-in, baggage rules"},
-            },
-            "required": ["policy_type"]
-        },
-    )
+#     # 여객 운송 약관(탑승 수속, 수하물 규정 등)을 조회하는 기능
+#     get_transport_policy_info = FunctionDeclaration(
+#         name="get_transport_policy_info",
+#         description="Retrieve transportation policy information such as check-in and baggage rules from a PDF",
+#         parameters={
+#             "type": "object",
+#             "properties": {
+#                 "policy_type": {"type": "string", "description": "Type of policy, e.g., check-in, baggage rules"},
+#             },
+#             "required": ["policy_type"]
+#         },
+#     )
 
-    # # 항공편 정보 조회하는 기능
-    # get_flight_info = FunctionDeclaration(
-    #     name="get_transport_policy_info",
-    # )
+#     # # 항공편 정보 조회하는 기능
+#     # get_flight_info = FunctionDeclaration(
+#     #     name="get_transport_policy_info",
+#     # )
     
-    flight_tool = Tool(
-        function_declarations=[
-            get_flight_fare_info,
-            get_transport_policy_info,
-            # get_flight_info,
-        ],
-    )
-    return flight_tool
+#     flight_tool = Tool(
+#         function_declarations=[
+#             get_flight_fare_info,
+#             get_transport_policy_info,
+#             # get_flight_info,
+#         ],
+#     )
+#     return flight_tool
     
 def send_chat_message(prompt:str) -> str:
     # tools=[tool_declarate()]
