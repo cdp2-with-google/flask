@@ -6,7 +6,7 @@ import requests
 #     Part,
 #     Tool,
 # )
-import vertex_ai_search
+from .vertex_ai_search import search_pdf
 
 # def tool_declarate() -> Tool:
 #     # 항공 운임표 정보를 조회하는 기능
@@ -76,7 +76,7 @@ def send_chat_message(prompt:str) -> str:
     # # Gemini가 판단하여 호출한 함수
     # selected_function_name = function_call.name
     # print("selected_function_name: " + selected_function_name, "\n")
-    answer_response = vertex_ai_search.search_pdf(prompt)
+    answer_response = search_pdf(prompt)
     return answer_response
     
     

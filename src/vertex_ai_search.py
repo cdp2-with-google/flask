@@ -9,7 +9,7 @@ import os
 from langchain_google_vertexai.llms import VertexAI
 from langchain.prompts import PromptTemplate
 from langchain.chains import LLMChain
-import config
+from . import config 
 
 def retrieve_vertex_ai_search(question:str, search_url:str, page_size:int) -> str:
     stream = os.popen('gcloud auth print-access-token')
