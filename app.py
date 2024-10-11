@@ -78,7 +78,7 @@ def create_conversation():
     return jsonify(response_data)
 
 @app.route('/mvp/conversations', methods=['POST'])
-def create_conversation():
+def mvp_create_conversation():
     data = request.get_json()
 
     # 요청으로부터 필요 데이터 추출
