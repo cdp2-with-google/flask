@@ -14,16 +14,18 @@ PROJECT_ID = ""
 REGION="asia-northeast3"
 MODEL = "gemini-1.5-pro-001"
 SEARCH_URL = ""
+
+import google.auth
 import google.auth.transport.requests
-import google.oauth2.id_token
+creds, project = google.auth.default()
 auth_req = google.auth.transport.requests.Request()
-audience = ""
-id_token = google.oauth2.id_token.fetch_id_token(auth_req, audience)
+creds.refresh(auth_req)
+id_token = creds.token
 
 
 def retrieve_vertex_ai_search(question:str, search_url:str, page_size:int) -> str:
-    stream = os.popen('gcloud auth print-access-token')
-    credential_token = stream.read().strip()
+    # stream = os.popen('gcloud auth print-access-token')
+    # credential_token = stream.read().strip()
     
     """ retrieve information from enterprise search ( discovery engine )"""
 
