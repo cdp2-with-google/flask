@@ -1,0 +1,7 @@
+requests
+google-auth
+google-auth-oauthlib
+google-cloud-aiplatform
+langchain
+flask
+langchain_google_vertexai
