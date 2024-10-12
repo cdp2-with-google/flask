@@ -1,10 +1,12 @@
 from flask import Flask, request, jsonify, Response
+from flask_cors import CORS
 import time
 import json
 from datetime import datetime
 from src.rag import send_chat_message
 
 app = Flask(__name__)
+CORS(app)
 
 # Memory DB
 conversations = {}
