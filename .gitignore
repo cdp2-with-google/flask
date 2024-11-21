@@ -1,0 +1,2 @@
+# Ignore config.py in the src directory
+src/config.py
