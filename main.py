@@ -3,7 +3,7 @@ from flask_cors import CORS
 import time
 import json
 from datetime import datetime
-from src.rag import send_chat_message
+from src.react import send_chat_message
 
 app = Flask(__name__)
 CORS(app)
@@ -109,7 +109,7 @@ def mvp_create_conversation():
         return jsonify({"error": "Conversation not found"}), 404
 
     # 답변 생성 및 저장
-    answer = send_chat_message(question)  # 여기를 우리가 만든 모델에서 받아오게 추후 수정
+    answer = send_chat_message(question)  # 여기를 우리가 만든 모델에서 받아오는 부분
     response_data = {
         'data': {
             'conversation_id': conversation_id,

@@ -1,18 +1,20 @@
-import vertexai
 import google
 import google.oauth2.credentials
 from google.auth import compute_engine
 import google.auth.transport.requests
 import requests
 import json
-import os
-from langchain_google_vertexai.llms import VertexAI
-from langchain.prompts import PromptTemplate
-from langchain.chains import LLMChain
+# from langchain_google_vertexai.llms import VertexAI
+# from langchain.prompts import PromptTemplate
+# from langchain.chains import LLMChain
+from vertexai.generative_models import (
+    GenerationConfig,
+    GenerativeModel,
+)
 #from .config import PROJECT_ID, REGION, MODEL, SEARCH_URL
 PROJECT_ID = ""
 REGION="asia-northeast3"
-MODEL = "gemini-1.5-pro-001"
+MODEL = "gemini-1.5-pro-002"
 SEARCH_URL = ""
 
 import google.auth
@@ -115,33 +117,44 @@ def parse_discovery_results(response_text: str) -> dict:
     return searched_ctx_dic
 
 def search_pdf(question:str, SEARCH_URL:str = SEARCH_URL) -> str:
-    gemini_pro = VertexAI( model_name = MODEL,
-                  project=PROJECT_ID,
-                  location=REGION,
-                  verbose=True,
-                  streaming=False,
-                  temperature = 0.2,
-                  top_p = 1,
-                  top_k = 40
-                 )
     
     page_size = 5
-    
     searched_ctx = retrieve_vertex_ai_search(question, SEARCH_URL, page_size)
     context = parse_discovery_results(searched_ctx)
+    
+    # gemini_pro = VertexAI( model_name = MODEL,
+    #               project=PROJECT_ID,
+    #               location=REGION,
+    #               verbose=True,
+    #               streaming=False,
+    #               temperature = 0.2,
+    #               top_p = 1,
+    #               top_k = 40
+    #              )
+    # prompt = PromptTemplate.from_template("""
+    # 당신은 항공사 CS AI 어시스턴트입니다.
+    # 아래 Question 에 대해서 반드시 Context에 있는 개별 내용을 기반으로 단계적으로 추론해서 근거를 설명하고 답변해주세요.
+    # Context : {context}
+    # Question : {question}
+    # """)
+    # prompt = prompt.format(context=context, question=question)
+    # print(f"Prompt : {prompt}")
+    # response = gemini_pro.invoke(prompt)
 
-    prompt = PromptTemplate.from_template("""
+    model = GenerativeModel(
+        "gemini-1.5-pro-002",
+        generation_config=GenerationConfig(temperature=0),
+    )
+    chat = model.start_chat()
 
+    # Gemini로 채팅 메시지 보내기
+    prompt = f"""
     당신은 항공사 CS AI 어시스턴트입니다.
     아래 Question 에 대해서 반드시 Context에 있는 개별 내용을 기반으로 단계적으로 추론해서 근거를 설명하고 답변해주세요.
     Context : {context}
     Question : {question}
+    """
+    response = chat.send_message(prompt)
+    print(response)
 
-    """)
-
-    prompt = prompt.format(context=context, question=question)
-
-    print(f"Prompt : {prompt}")
-
-    response = gemini_pro.invoke(prompt)
-    return response
+    return response.candidates[0].content.parts[0].text
